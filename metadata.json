@@ -1,0 +1,6 @@
+{
+  "name": "Monster Siren",
+  "description": "Мобильный плеер и офлайн-архив музыки Monster Siren Records (塞壬唱片-MSR) с загрузкой треков, альбомов и синхронизированных текстов для прослушивания без интернета.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

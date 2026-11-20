@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monster Siren — фанатское приложение</title>
+  <meta name="description" content="Неофициальное фанатское мобильное приложение-плеер и офлайн-архив музыки Monster Siren Records (塞壬唱片-MSR)." />
+  <style>
+    :root {
+      --bg: #0b0b0c;
+      --panel: #121214;
+      --line: #2a2a2e;
+      --text: #f2f2f2;
+      --muted: #8b8b90;
+      --accent: #ffffff;
+      --warn: #ffcf4a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .16;
+      background-image: radial-gradient(circle at 1px 1px, #fff 1px, transparent 0);
+      background-size: 6px 6px;
+      mask-image: linear-gradient(to bottom, #000, transparent 70%);
+    }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px 80px; position: relative; }
+    header { padding: 64px 0 28px; border-bottom: 1px solid var(--line); }
+    .kicker {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    h1 {
+      font-family: "Oswald", Impact, sans-serif;
+      font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+      font-size: clamp(38px, 8vw, 72px); line-height: 1; margin: 14px 0 8px;
+    }
+    .cn { color: var(--muted); font-size: 16px; margin: 0 0 26px; }
+    .disclaimer {
+      border: 1px solid var(--warn);
+      background: rgba(255, 207, 74, .07);
+      padding: 16px 18px;
+      margin: 0 0 28px;
+      font-size: 14px;
+    }
+    .disclaimer strong {
+      display: block; color: var(--warn);
+      font-family: ui-monospace, Menlo, monospace;
+      letter-spacing: .12em; font-size: 12px; margin-bottom: 6px;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 22px; border: 1px solid var(--accent);
+      color: var(--bg); background: var(--accent);
+      font-weight: 700; text-decoration: none; text-transform: uppercase;
+      letter-spacing: .08em; font-size: 13px;
+    }
+    .btn:hover { background: #d6d6d6; border-color: #d6d6d6; }
+    .btn.ghost { background: transparent; color: var(--text); border-color: var(--line); }
+    .btn.ghost:hover { border-color: var(--accent); }
+    section { padding: 36px 0; border-bottom: 1px solid var(--line); }
+    h2 {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 13px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); margin: 0 0 18px;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .card { border: 1px solid var(--line); background: var(--panel); padding: 18px; }
+    .card h3 { margin: 0 0 6px; font-size: 15px; text-transform: uppercase; letter-spacing: .06em; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    ol { padding-left: 20px; color: var(--muted); font-size: 14px; }
+    ol li { margin-bottom: 8px; }
+    code {
+      font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+      background: var(--panel); border: 1px solid var(--line); padding: 2px 6px;
+      color: var(--text);
+    }
+    footer { padding-top: 28px; color: var(--muted); font-size: 13px; }
+    a { color: var(--text); text-underline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="kicker">塞壬唱片-MSR // FAN ARCHIVE</div>
+      <h1>Monster Siren</h1>
+      <p class="cn">Неофициальный фанатский плеер и офлайн-архив музыки Monster Siren Records.</p>
+
+      <div class="disclaimer">
+        <strong>⚠ ВАЖНО: ЭТО ФАНАТСКОЕ ПРИЛОЖЕНИЕ</strong>
+        Оно не создано, не поддерживается и не одобрено Hypergryph, SKYSTUDIO или Monster Siren Records.
+        Все товарные знаки, логотипы, музыка, обложки и тексты принадлежат их законным владельцам
+        и используются только в информационных целях. Для официальной информации используйте
+        каналы, указанные в разделе CONTACT внутри приложения.
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="https://github.com/neponum/monster-siren-fan-app/releases/latest/download/app-release.apk">Скачать APK</a>
+        <a class="btn ghost" href="https://github.com/neponum/monster-siren-fan-app">Исходный код на GitHub</a>
+        <a class="btn ghost" href="https://github.com/neponum/monster-siren-fan-app/releases">Все релизы</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>// Возможности</h2>
+      <div class="grid">
+        <div class="card"><h3>Каталог MSR</h3><p>Альбомы и треки с поиском и синхронизацией каталога.</p></div>
+        <div class="card"><h3>Офлайн-архив</h3><p>Загрузка треков, альбомов и синхронизированных LRC-текстов.</p></div>
+        <div class="card"><h3>Плеер</h3><p>Мини-плеер, виниловый экран, очередь, shuffle и repeat.</p></div>
+        <div class="card"><h3>Автообновление</h3><p>Проверка новых версий прямо в приложении.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>// Установка и обновления</h2>
+      <ol>
+        <li>Скачайте <code>app-release.apk</code> из последнего релиза.</li>
+        <li>Откройте файл и разрешите установку из неизвестных источников.</li>
+        <li>При первом запуске подтвердите дисклеймер.</li>
+        <li>Далее приложение само проверит наличие новой версии при запуске и предложит её установить.</li>
+      </ol>
+      <p>
+        Бесшумная установка обновлений на обычном Android невозможна — потребуется одно подтверждение
+        системным установщиком. Проверить обновления вручную можно в разделе <strong>INFO</strong>.
+      </p>
+    </section>
+
+    <section>
+      <h2>// Для разработчиков</h2>
+      <p>
+        Обновление выпускается тегом <code>v1.1</code>: GitHub Actions собирает подписанный APK
+        и прикрепляет его к релизу. Подробности — в <a href="https://github.com/neponum/monster-siren-fan-app#readme">README репозитория</a>.
+      </p>
+    </section>
+
+    <footer>
+      Сделано фанатами для фанатов. Не коммерческий проект.<br />
+      © Соответствующие права принадлежат их владельцам.
+    </footer>
+  </div>
+</body>
+</html>

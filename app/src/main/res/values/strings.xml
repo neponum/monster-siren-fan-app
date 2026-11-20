@@ -1,0 +1,102 @@
+<resources>
+    <string name="app_name">Monster Siren</string>
+    <string name="brand_subtitle">塞壬唱片-MSR // ARCHIVE</string>
+    <string name="nav_music">Музыка</string>
+    <string name="nav_songs">Треки</string>
+    <string name="nav_offline">Офлайн</string>
+
+    <string name="tab_albums">Альбомы</string>
+    <string name="tab_all_songs">Все треки</string>
+    <string name="search_placeholder">Поиск альбомов, треков, исполнителей…</string>
+    <string name="offline_mode_label">Только офлайн</string>
+    <string name="offline_badge">ОФЛАЙН</string>
+    <string name="online_badge">СТРИМ</string>
+    <string name="sync_catalog">Обновить каталог</string>
+    <string name="featured_label">ИЗБРАННЫЕ РЕЛИЗЫ // MSR</string>
+    <string name="catalog_label">КАТАЛОГ РЕЛИЗОВ</string>
+    <string name="tracks_count_format">%1$d треков</string>
+    <string name="offline_tracks_ready_format">%1$d офлайн</string>
+
+    <string name="album_play_all">Слушать</string>
+    <string name="album_download_all">Скачать альбом</string>
+    <string name="album_downloaded_all">Скачано офлайн</string>
+    <string name="album_downloading">Загрузка…</string>
+    <string name="album_delete_downloads">Удалить кэш</string>
+    <string name="album_intro_title">О РЕЛИЗЕ // INFO</string>
+    <string name="album_tracklist_title">ТРЕКЛИСТ // TRACKS</string>
+
+    <string name="offline_vault_title">Офлайн-хранилище</string>
+    <string name="offline_vault_subtitle">Музыка доступна без подключения к сети</string>
+    <string name="offline_storage_used">Занято на устройстве</string>
+    <string name="offline_play_all">Слушать всё офлайн</string>
+    <string name="offline_clear_all">Очистить всё</string>
+    <string name="offline_filter_tracks">Скачанные треки</string>
+    <string name="offline_filter_albums">Альбомы</string>
+    <string name="offline_filter_favorites">Избранное</string>
+    <string name="offline_empty_title">Пока нет скачанных треков</string>
+    <string name="offline_empty_hint">Откройте любой альбом или трек в каталоге и нажмите иконку загрузки, чтобы слушать музыку Monster Siren без интернета.</string>
+    <string name="offline_active_downloads">Активные загрузки</string>
+
+    <string name="player_now_playing">СЕЙЧАС ИГРАЕТ // MSR</string>
+    <string name="player_vinyl_tab">ВИНИЛ</string>
+    <string name="player_lyrics_tab">ТЕКСТ (LRC)</string>
+    <string name="player_no_lyrics">Текст песни недоступен для этого трека</string>
+    <string name="player_queue_title">Очередь воспроизведения</string>
+    <string name="player_download_track">Сохранить офлайн</string>
+    <string name="player_track_saved">Сохранено офлайн</string>
+    <string name="player_error_offline_not_downloaded">Трек не скачан. Подключитесь к сети или скачайте трек для прослушивания офлайн.</string>
+    <string name="player_error_playback">Не удалось воспроизвести трек. Проверьте сеть или скачайте его заново.</string>
+
+    <string name="empty_catalog_title">Каталог пока пуст</string>
+    <string name="empty_catalog_hint">Подключитесь к интернету и нажмите «Обновить», чтобы загрузить официальный каталог Monster Siren Records.</string>
+    <string name="retry_button">Повторить</string>
+    <string name="confirm_clear_title">Удалить все офлайн-файлы?</string>
+    <string name="confirm_clear_message">Все сохранённые аудиофайлы будут удалены с устройства. Вы сможете скачать их снова при наличии интернета.</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_delete">Удалить</string>
+
+    <string name="cd_back">Назад</string>
+    <string name="cd_search">Поиск</string>
+    <string name="cd_clear_search">Очистить поиск</string>
+    <string name="cd_sync">Синхронизировать каталог</string>
+    <string name="cd_play">Воспроизвести</string>
+    <string name="cd_pause">Пауза</string>
+    <string name="cd_next">Следующий трек</string>
+    <string name="cd_previous">Предыдущий трек</string>
+    <string name="cd_shuffle">Перемешать</string>
+    <string name="cd_repeat">Повтор</string>
+    <string name="cd_favorite">Избранное</string>
+    <string name="cd_download">Скачать офлайн</string>
+    <string name="cd_delete_download">Удалить офлайн-копию</string>
+    <string name="cd_queue">Очередь</string>
+    <string name="cd_collapse_player">Свернуть плеер</string>
+    <string name="cd_album_cover">Обложка альбома</string>
+    <string name="cd_open_menu">Открыть меню</string>
+    <string name="cd_close_menu">Закрыть меню</string>
+
+    <string name="menu_sub_music">Музыка</string>
+    <string name="menu_sub_playlist">Плейлист</string>
+    <string name="menu_sub_info">Инфо</string>
+    <string name="menu_sub_contact">Контакты</string>
+    <string name="favorites_empty_hint">Нажмите на иконку сердца рядом с любым треком или в плеере, чтобы добавить его в избранное.</string>
+    <string name="contact_copied_email">Email скопирован в буфер обмена</string>
+
+    <string name="fan_disclaimer_title">ФАНАТСКОЕ ПРИЛОЖЕНИЕ</string>
+    <string name="fan_disclaimer_message">Это неофициальное фанатское приложение. Оно не создано, не поддерживается и не одобрено Hypergryph, SKYSTUDIO или Monster Siren Records. Все товарные знаки, логотипы, музыка и материалы принадлежат их законным владельцам и используются только в информационных целях.</string>
+    <string name="fan_disclaimer_understood">Понятно</string>
+    <string name="fan_disclaimer_short">НЕОФИЦИАЛЬНОЕ ФАНАТСКОЕ ПРИЛОЖЕНИЕ. Не связано с Hypergryph / Monster Siren Records.</string>
+
+    <string name="update_title">Доступно обновление</string>
+    <string name="update_available">Версия %1$s доступна для скачивания</string>
+    <string name="update_current">Текущая версия: %1$s</string>
+    <string name="update_download">Скачать и установить</string>
+    <string name="update_downloading">Загрузка… %1$d%%</string>
+    <string name="update_later">Позже</string>
+    <string name="update_check">ПРОВЕРИТЬ ОБНОВЛЕНИЯ</string>
+    <string name="update_checking">ПРОВЕРКА…</string>
+    <string name="update_no_updates">Установлена последняя версия</string>
+    <string name="update_error">Не удалось проверить обновления</string>
+    <string name="update_allow_install">Сначала разрешите установку из неизвестных источников</string>
+    <string name="update_release_notes">ЧТО НОВОГО</string>
+    <string name="update_dismissed">Обновление пропущено. Проверьте его в разделе INFO.</string>
+</resources>
