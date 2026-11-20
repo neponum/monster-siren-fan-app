@@ -22,7 +22,10 @@ jobs:
           java-version: '21'
 
       - name: Install required SDK components
-        run: yes | sdkmanager "platforms;android-36" "build-tools;36.1.0"
+        run: |
+          SDKMANAGER="$(find /usr/local/lib/android/sdk/cmdline-tools -type f -name sdkmanager | head -n 1)"
+          echo "Using: $SDKMANAGER"
+          yes | "$SDKMANAGER" "platforms;android-36" "build-tools;36.1.0"
 
       - name: Restore signing keystore
         env:
