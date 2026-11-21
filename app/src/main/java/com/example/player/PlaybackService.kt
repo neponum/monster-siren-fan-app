@@ -2,12 +2,16 @@ package com.example.player
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.example.MainActivity
+import com.example.widget.MsrWidgetProvider
+import com.example.widget.WidgetStateStore
 
 class PlaybackService : MediaSessionService() {
 
@@ -44,10 +48,18 @@ class PlaybackService : MediaSessionService() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        // Swiping the app out of Recents must stop playback completely.
         val player = mediaSession?.player
-        if (player == null || !player.playWhenReady || player.mediaItemCount == 0) {
-            stopSelf()
+        player?.pause()
+        player?.stop()
+        player?.clearMediaItems()
+        stopSelf()
+        // Run after any pending player-listener callbacks so the widget ends up idle.
+        Handler(Looper.getMainLooper()).post {
+            WidgetStateStore.clear(applicationContext)
+            MsrWidgetProvider.updateAll(applicationContext)
         }
+        super.onTaskRemoved(rootIntent)
     }
 
     override fun onDestroy() {
@@ -56,6 +68,8 @@ class PlaybackService : MediaSessionService() {
             release()
             mediaSession = null
         }
+        WidgetStateStore.clear(this)
+        MsrWidgetProvider.updateAll(this)
         super.onDestroy()
     }
 }

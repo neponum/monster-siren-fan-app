@@ -14,6 +14,9 @@ import androidx.media3.session.SessionToken
 import com.example.data.local.SongWithAlbum
 import com.example.data.repository.LyricLine
 import com.example.data.repository.MonsterSirenRepository
+import com.example.widget.MsrWidgetProvider
+import com.example.widget.WidgetSnapshot
+import com.example.widget.WidgetStateStore
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +26,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -63,6 +68,7 @@ class PlayerController(
     private var positionTickerJob: Job? = null
     private var loadTrackJob: Job? = null
     private var pendingTrackStart: (() -> Unit)? = null
+    private var pendingToggle = false
 
     private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -102,6 +108,23 @@ class PlayerController(
                 it.copy(shuffleEnabled = savedShuffle, repeatMode = savedRepeat)
             }
         }
+        scope.launch {
+            _uiState
+                .map { state ->
+                    WidgetSnapshot(
+                        title = state.currentSong?.song?.name.orEmpty(),
+                        artist = state.currentSong?.song?.artistsJoined.orEmpty(),
+                        album = state.currentSong?.albumName.orEmpty(),
+                        artworkPath = state.currentSong?.albumLocalCoverPath,
+                        isPlaying = state.isPlaying
+                    )
+                }
+                .distinctUntilChanged()
+                .collect { snapshot ->
+                    WidgetStateStore.save(context, snapshot)
+                    MsrWidgetProvider.updateAll(context)
+                }
+        }
     }
 
     private fun connectController() {
@@ -116,6 +139,10 @@ class PlayerController(
                     controller.addListener(playerListener)
                     pendingTrackStart?.invoke()
                     pendingTrackStart = null
+                    if (pendingToggle) {
+                        pendingToggle = false
+                        togglePlayPause()
+                    }
                 }.onFailure { err ->
                     Log.e(TAG, "Failed connecting MediaController", err)
                 }
@@ -145,7 +172,12 @@ class PlayerController(
     }
 
     fun togglePlayPause() {
-        val controller = mediaController ?: return
+        val controller = mediaController
+        if (controller == null) {
+            pendingToggle = true
+            if (controllerFuture == null) connectController()
+            return
+        }
         if (controller.isPlaying) {
             controller.pause()
         } else {

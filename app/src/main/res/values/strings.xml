@@ -99,4 +99,18 @@
     <string name="update_allow_install">Сначала разрешите установку из неизвестных источников</string>
     <string name="update_release_notes">ЧТО НОВОГО</string>
     <string name="update_dismissed">Обновление пропущено. Проверьте его в разделе INFO.</string>
+
+    <string name="widget_label">Monster Siren</string>
+    <string name="widget_description">Плеер Monster Siren на главном экране</string>
+    <string name="widget_idle">Нет воспроизведения</string>
+    <string name="widget_open_app">Открыть Monster Siren</string>
+    <string name="widget_play">Воспроизвести</string>
+    <string name="widget_pause">Пауза</string>
+    <string name="widget_next">Следующий трек</string>
+    <string name="widget_previous">Предыдущий трек</string>
+    <string name="widget_brand">MONSTER SIREN // MSR</string>
+    <string name="widget_default_artist">塞壬唱片-MSR</string>
+    <string name="widget_status_playing">СЕЙЧАС ИГРАЕТ // MSR</string>
+    <string name="widget_status_paused">ПАУЗА // MSR</string>
+    <string name="widget_status_idle">ОТКРОЙТЕ ПРИЛОЖЕНИЕ</string>
 </resources>
