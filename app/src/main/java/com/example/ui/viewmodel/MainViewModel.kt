@@ -198,12 +198,7 @@ class MainViewModel(
                 return@launch
             }
 
-            val notes = runCatching {
-                appContext.resources.openRawResource(R.raw.changelog)
-                    .bufferedReader()
-                    .use { it.readText() }
-                    .trim()
-            }.getOrNull()
+            val notes = readChangelog()
 
             if (notes.isNullOrBlank()) {
                 repository.preferences.setLastSeenVersion(currentVersion)
@@ -212,6 +207,17 @@ class MainViewModel(
             }
         }
     }
+
+    fun showWhatsNew() {
+        _whatsNew.value = readChangelog()
+    }
+
+    private fun readChangelog(): String? = runCatching {
+        appContext.resources.openRawResource(R.raw.changelog)
+            .bufferedReader()
+            .use { it.readText() }
+            .trim()
+    }.getOrNull()?.takeIf { it.isNotBlank() }
 
     fun dismissWhatsNew() {
         _whatsNew.value = null

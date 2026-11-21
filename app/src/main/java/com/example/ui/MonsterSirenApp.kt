@@ -302,7 +302,8 @@ fun MonsterSirenApp(
                                 onOpenNewsDetail = viewModel::openNewsDetail,
                                 onCloseNewsDetail = viewModel::closeNewsDetail,
                                 updateState = updateState,
-                                onCheckUpdates = { viewModel.checkForUpdates(manual = true) }
+                                onCheckUpdates = { viewModel.checkForUpdates(manual = true) },
+                                onShowWhatsNew = viewModel::showWhatsNew
                             )
                         }
 

@@ -86,6 +86,7 @@ fun MsrInfoScreen(
     onCloseNewsDetail: () -> Unit,
     updateState: UpdateUiState,
     onCheckUpdates: () -> Unit,
+    onShowWhatsNew: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val selectedDetail = newsState.selectedDetail
@@ -254,6 +255,17 @@ fun MsrInfoScreen(
                                 color = if (updateState.update != null) MsrPureWhite else MsrGrayMuted
                             )
                         }
+
+                        Text(
+                            text = "ЧТО НОВОГО // ${BuildConfig.VERSION_NAME}",
+                            style = MsrMonoMicro,
+                            color = MsrGrayLight,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(onClick = onShowWhatsNew)
+                                .padding(vertical = 6.dp)
+                                .testTag("info_whats_new_button")
+                        )
                     }
                 }
 
