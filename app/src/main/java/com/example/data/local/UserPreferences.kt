@@ -22,6 +22,9 @@ class UserPreferences(private val context: Context) {
         val LAST_SONG_CID = stringPreferencesKey("last_song_cid")
         val DISCLAIMER_ACCEPTED = booleanPreferencesKey("disclaimer_accepted")
         val UPDATE_DISMISSED_TAG = stringPreferencesKey("update_dismissed_tag")
+        val LAST_SEEN_VERSION = stringPreferencesKey("last_seen_version")
+        val PLAYBACK_QUEUE = stringPreferencesKey("playback_queue")
+        val PLAYBACK_QUEUE_INDEX = intPreferencesKey("playback_queue_index")
     }
 
     val offlineOnlyMode: Flow<Boolean> = context.dataStore.data.map { prefs ->
@@ -48,6 +51,22 @@ class UserPreferences(private val context: Context) {
         prefs[Keys.UPDATE_DISMISSED_TAG]
     }
 
+    val lastSeenVersion: Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[Keys.LAST_SEEN_VERSION]
+    }
+
+    val playbackQueue: Flow<List<String>> = context.dataStore.data.map { prefs ->
+        prefs[Keys.PLAYBACK_QUEUE]
+            ?.split(',')
+            ?.map { it.trim() }
+            ?.filter { it.isNotEmpty() }
+            .orEmpty()
+    }
+
+    val playbackQueueIndex: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[Keys.PLAYBACK_QUEUE_INDEX] ?: 0
+    }
+
     suspend fun setOfflineOnlyMode(enabled: Boolean) {
         context.dataStore.edit { it[Keys.OFFLINE_ONLY_MODE] = enabled }
     }
@@ -72,6 +91,17 @@ class UserPreferences(private val context: Context) {
         context.dataStore.edit { prefs ->
             if (tag == null) prefs.remove(Keys.UPDATE_DISMISSED_TAG)
             else prefs[Keys.UPDATE_DISMISSED_TAG] = tag
+        }
+    }
+
+    suspend fun setLastSeenVersion(version: String) {
+        context.dataStore.edit { it[Keys.LAST_SEEN_VERSION] = version }
+    }
+
+    suspend fun setPlaybackQueue(cids: List<String>, currentIndex: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[Keys.PLAYBACK_QUEUE] = cids.joinToString(",")
+            prefs[Keys.PLAYBACK_QUEUE_INDEX] = currentIndex
         }
     }
 }

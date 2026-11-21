@@ -41,10 +41,33 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
 
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+
+          tag = os.environ.get("GITHUB_REF_NAME", "")
+          version = tag.lstrip("v")
+          try:
+              text = open("CHANGELOG.md", encoding="utf-8").read()
+          except FileNotFoundError:
+              text = ""
+
+          match = re.search(
+              rf"^##\s+\[?{re.escape(version)}\]?[^\n]*\n(.*?)(?=^##\s|\Z)",
+              text,
+              re.M | re.S,
+          )
+          body = match.group(1).strip() if match else f"Обновление {tag}."
+          open("release-notes.md", "w", encoding="utf-8").write(body + "\n")
+          PY
+
       - name: Publish GitHub Release with APK
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/release/app-release.apk
-          generate_release_notes: true
+          body_path: release-notes.md
+          generate_release_notes: false
           draft: false
           prerelease: false

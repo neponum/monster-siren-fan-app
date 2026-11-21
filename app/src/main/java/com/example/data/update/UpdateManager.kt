@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit
 data class GithubReleaseDto(
     @Json(name = "tag_name") val tagName: String,
     val body: String? = null,
+    @Json(name = "html_url") val htmlUrl: String? = null,
     val assets: List<GithubAssetDto> = emptyList()
 )
 
@@ -37,6 +38,7 @@ data class AppUpdate(
     val tag: String,
     val versionName: String,
     val notes: String?,
+    val releaseUrl: String?,
     val downloadUrl: String,
     val fileName: String,
     val sizeBytes: Long
@@ -103,6 +105,7 @@ class UpdateManager(private val context: Context) {
                 tag = release.tagName,
                 versionName = release.tagName.removePrefix("v").trim(),
                 notes = release.body?.takeIf { it.isNotBlank() },
+                releaseUrl = release.htmlUrl,
                 downloadUrl = asset.browserDownloadUrl,
                 fileName = asset.name,
                 sizeBytes = asset.size

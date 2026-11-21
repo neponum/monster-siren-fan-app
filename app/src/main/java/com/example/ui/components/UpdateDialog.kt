@@ -2,6 +2,7 @@ package com.example.ui.components
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -15,7 +16,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.R
 import com.example.data.update.UpdateManager
@@ -35,6 +38,7 @@ fun UpdateDialog(
     onDismissMessage: () -> Unit
 ) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     val installPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { onDownload() }
@@ -66,17 +70,28 @@ fun UpdateDialog(
                             style = MsrMonoMicro,
                             color = MsrGrayMuted
                         )
-                        if (!update.notes.isNullOrBlank()) {
-                            Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = stringResource(R.string.update_release_notes),
+                            style = MsrMonoMicro,
+                            color = MsrGrayMuted
+                        )
+                        Text(
+                            text = update.notes
+                                ?: stringResource(R.string.update_release_notes_empty),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MsrGrayLight
+                        )
+                        if (!update.releaseUrl.isNullOrBlank()) {
+                            Spacer(modifier = Modifier.height(10.dp))
                             Text(
-                                text = stringResource(R.string.update_release_notes),
-                                style = MsrMonoMicro,
-                                color = MsrGrayMuted
-                            )
-                            Text(
-                                text = update.notes,
+                                text = stringResource(R.string.update_open_release),
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MsrGrayLight
+                                color = MsrPureWhite,
+                                textDecoration = TextDecoration.Underline,
+                                modifier = Modifier.clickable {
+                                    uriHandler.openUri(update.releaseUrl)
+                                }
                             )
                         }
                         if (state.isDownloading) {

@@ -18,6 +18,7 @@ import com.example.widget.MsrWidgetProvider
 import com.example.widget.WidgetSnapshot
 import com.example.widget.WidgetStateStore
 import com.google.common.util.concurrent.ListenableFuture
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -69,6 +70,8 @@ class PlayerController(
     private var loadTrackJob: Job? = null
     private var pendingTrackStart: (() -> Unit)? = null
     private var pendingToggle = false
+
+    private val queueRestored = CompletableDeferred<Unit>()
 
     private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -125,6 +128,46 @@ class PlayerController(
                     MsrWidgetProvider.updateAll(context)
                 }
         }
+        scope.launch {
+            // Restore the last queue so the widget and notification can control
+            // playback even after the app process was recreated.
+            try {
+                val savedCids = repository.preferences.playbackQueue.first()
+                val savedIndex = repository.preferences.playbackQueueIndex.first()
+                if (savedCids.isNotEmpty()) {
+                    val restored = savedCids.mapNotNull { cid ->
+                        repository.getSongWithAlbum(cid)
+                    }
+                    if (restored.isNotEmpty()) {
+                        val safeIndex = savedIndex.coerceIn(0, restored.lastIndex)
+                        _uiState.update { state ->
+                            if (state.queue.isEmpty()) {
+                                state.copy(
+                                    queue = restored,
+                                    currentIndex = safeIndex,
+                                    currentSong = restored[safeIndex]
+                                )
+                            } else {
+                                state
+                            }
+                        }
+                    }
+                }
+            } finally {
+                queueRestored.complete(Unit)
+            }
+
+            _uiState
+                .map { state -> state.queue.map { it.song.cid } to state.currentIndex }
+                .distinctUntilChanged()
+                .collect { (cids, index) ->
+                    repository.preferences.setPlaybackQueue(cids, index)
+                }
+        }
+    }
+
+    suspend fun awaitQueueRestored() {
+        queueRestored.await()
     }
 
     private fun connectController() {

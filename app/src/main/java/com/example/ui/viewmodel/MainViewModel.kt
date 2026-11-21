@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.BuildConfig
+import com.example.R
 import com.example.data.local.AlbumWithStats
 import com.example.data.local.SongWithAlbum
 import com.example.data.remote.NewsDetailDto
@@ -68,7 +70,7 @@ data class UpdateUiState(
 class MainViewModel(
     private val repository: MonsterSirenRepository,
     val playerController: PlayerController,
-    appContext: Context
+    private val appContext: Context
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -84,6 +86,9 @@ class MainViewModel(
 
     private val _updateState = MutableStateFlow(UpdateUiState())
     val updateState: StateFlow<UpdateUiState> = _updateState.asStateFlow()
+
+    private val _whatsNew = MutableStateFlow<String?>(null)
+    val whatsNew: StateFlow<String?> = _whatsNew.asStateFlow()
 
     val disclaimerAccepted: StateFlow<Boolean> = repository.preferences.disclaimerAccepted
         .stateIn(viewModelScope, SharingStarted.Eagerly, true)
@@ -177,6 +182,42 @@ class MainViewModel(
         syncCatalog(showFeedback = false)
         loadNews()
         checkForUpdates(manual = false)
+        loadWhatsNewIfNeeded()
+    }
+
+    private fun loadWhatsNewIfNeeded() {
+        viewModelScope.launch {
+            val currentVersion = BuildConfig.VERSION_NAME
+            val lastSeen = repository.preferences.lastSeenVersion.firstOrNull()
+            if (lastSeen == currentVersion) return@launch
+
+            val accepted = repository.preferences.disclaimerAccepted.firstOrNull() ?: false
+            if (lastSeen == null && !accepted) {
+                // Fresh install: the fan disclaimer is enough for the first launch.
+                repository.preferences.setLastSeenVersion(currentVersion)
+                return@launch
+            }
+
+            val notes = runCatching {
+                appContext.resources.openRawResource(R.raw.changelog)
+                    .bufferedReader()
+                    .use { it.readText() }
+                    .trim()
+            }.getOrNull()
+
+            if (notes.isNullOrBlank()) {
+                repository.preferences.setLastSeenVersion(currentVersion)
+            } else {
+                _whatsNew.value = notes
+            }
+        }
+    }
+
+    fun dismissWhatsNew() {
+        _whatsNew.value = null
+        viewModelScope.launch {
+            repository.preferences.setLastSeenVersion(BuildConfig.VERSION_NAME)
+        }
     }
 
     fun checkForUpdates(manual: Boolean = false) {

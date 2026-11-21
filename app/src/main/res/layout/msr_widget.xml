@@ -4,161 +4,104 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_background"
-    android:orientation="vertical">
-
-    <!-- Editorial top strip: mono brand label + right hatch marks -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingTop="6dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="4dp">
-
-        <TextView
-            android:id="@+id/widget_brand"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/jetbrains_mono"
-            android:letterSpacing="0.14"
-            android:maxLines="1"
-            android:text="@string/widget_brand"
-            android:textColor="#848484"
-            android:textSize="8sp" />
-
-        <TextView
-            android:id="@+id/widget_hatches"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/jetbrains_mono"
-            android:letterSpacing="0.08"
-            android:text="\\\\"
-            android:textColor="#555555"
-            android:textSize="9sp" />
-    </LinearLayout>
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/widget_hairline"
-        android:contentDescription="@null" />
+        android:id="@+id/widget_artwork"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:background="@drawable/widget_cover_frame"
+        android:contentDescription="@string/cd_album_cover"
+        android:padding="1dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_msr_cover_placeholder" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="10dp"
-        android:paddingTop="6dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="4dp">
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/widget_artwork"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:background="@drawable/widget_cover_frame"
-            android:contentDescription="@string/cd_album_cover"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_msr_cover_placeholder" />
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/montserrat"
+            android:letterSpacing="0.04"
+            android:maxLines="1"
+            android:text="@string/app_name"
+            android:textAllCaps="true"
+            android:textColor="#F0F0F0"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/widget_accent"
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:background="#4A4A4A"
-            android:contentDescription="@null" />
+        <TextView
+            android:id="@+id/widget_artist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/jetbrains_mono"
+            android:letterSpacing="0.06"
+            android:maxLines="1"
+            android:text="@string/widget_default_artist"
+            android:textAllCaps="true"
+            android:textColor="#848484"
+            android:textSize="9sp" />
+
+        <TextView
+            android:id="@+id/widget_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/jetbrains_mono"
+            android:letterSpacing="0.06"
+            android:maxLines="1"
+            android:text="@string/widget_status_idle"
+            android:textColor="#B5B5B5"
+            android:textSize="8sp" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginTop="6dp"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/widget_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="@font/montserrat"
-                android:letterSpacing="0.05"
-                android:maxLines="1"
-                android:text="@string/app_name"
-                android:textAllCaps="true"
-                android:textColor="#F0F0F0"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+            <ImageButton
+                android:id="@+id/widget_previous"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/widget_previous"
+                android:padding="7dp"
+                android:src="@drawable/ic_widget_previous" />
 
-            <TextView
-                android:id="@+id/widget_artist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:ellipsize="end"
-                android:fontFamily="@font/jetbrains_mono"
-                android:letterSpacing="0.08"
-                android:maxLines="1"
-                android:text="@string/widget_default_artist"
-                android:textAllCaps="true"
-                android:textColor="#848484"
-                android:textSize="9sp" />
+            <ImageButton
+                android:id="@+id/widget_toggle"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/widget_play_circle"
+                android:contentDescription="@string/widget_play"
+                android:padding="9dp"
+                android:src="@drawable/ic_widget_play"
+                android:tint="#0A0A0A" />
 
-            <TextView
-                android:id="@+id/widget_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:ellipsize="end"
-                android:fontFamily="@font/jetbrains_mono"
-                android:letterSpacing="0.06"
-                android:maxLines="1"
-                android:text="@string/widget_status_idle"
-                android:textColor="#B5B5B5"
-                android:textSize="8sp" />
+            <ImageButton
+                android:id="@+id/widget_next"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/widget_next"
+                android:padding="7dp"
+                android:src="@drawable/ic_widget_next" />
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingTop="0dp"
-        android:paddingBottom="7dp">
-
-        <ImageButton
-            android:id="@+id/widget_previous"
-            android:layout_width="44dp"
-            android:layout_height="30dp"
-            android:background="@drawable/widget_control_button"
-            android:contentDescription="@string/widget_previous"
-            android:padding="8dp"
-            android:src="@drawable/ic_widget_previous" />
-
-        <ImageButton
-            android:id="@+id/widget_toggle"
-            android:layout_width="54dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/widget_control_button"
-            android:contentDescription="@string/widget_play"
-            android:padding="8dp"
-            android:src="@drawable/ic_widget_play" />
-
-        <ImageButton
-            android:id="@+id/widget_next"
-            android:layout_width="44dp"
-            android:layout_height="30dp"
-            android:background="@drawable/widget_control_button"
-            android:contentDescription="@string/widget_next"
-            android:padding="8dp"
-            android:src="@drawable/ic_widget_next" />
     </LinearLayout>
 </LinearLayout>

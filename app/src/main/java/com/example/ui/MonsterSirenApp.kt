@@ -48,6 +48,7 @@ import com.example.ui.components.MsrNavMenuItem
 import com.example.ui.components.MsrPersistentMiniPlayer
 import com.example.ui.components.MsrSlideOverNavMenu
 import com.example.ui.components.UpdateDialog
+import com.example.ui.components.WhatsNewDialog
 import com.example.ui.screens.AlbumDetailScreen
 import com.example.ui.screens.FullPlayerOverlay
 import com.example.ui.screens.MsrContactScreen
@@ -83,6 +84,7 @@ fun MonsterSirenApp(
     val snackbarMsg by viewModel.snackbarMessage.collectAsStateWithLifecycle()
     val updateState by viewModel.updateState.collectAsStateWithLifecycle()
     val disclaimerAccepted by viewModel.disclaimerAccepted.collectAsStateWithLifecycle()
+    val whatsNew by viewModel.whatsNew.collectAsStateWithLifecycle()
 
     var showNavDrawer by rememberSaveable { mutableStateOf(false) }
     var showFullPlayer by rememberSaveable { mutableStateOf(false) }
@@ -401,6 +403,14 @@ fun MonsterSirenApp(
 
         if (!disclaimerAccepted) {
             FanDisclaimerDialog(onAccept = viewModel::dismissDisclaimer)
+        }
+
+        whatsNew?.let { notes ->
+            WhatsNewDialog(
+                version = com.example.BuildConfig.VERSION_NAME,
+                notes = notes,
+                onDismiss = viewModel::dismissWhatsNew
+            )
         }
 
         UpdateDialog(

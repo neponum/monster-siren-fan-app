@@ -12,12 +12,16 @@ import android.widget.RemoteViews
 import com.example.MainActivity
 import com.example.MonsterSirenApplication
 import com.example.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
- * Home-screen widget: artwork, title/artist and previous/play-pause/next controls.
- * It reads a small snapshot stored by [com.example.player.PlayerController] and
- * forwards control actions to the app's in-process player controller.
+ * Compact 4x2 home-screen music player: artwork, track/artist and
+ * previous / play-pause / next controls. Actions are forwarded to the
+ * app's PlayerController, which restores its queue on demand.
  */
 class MsrWidgetProvider : AppWidgetProvider() {
 
@@ -27,13 +31,14 @@ class MsrWidgetProvider : AppWidgetProvider() {
         const val ACTION_PREVIOUS = "com.example.widget.ACTION_PREVIOUS"
         const val ACTION_REFRESH = "com.example.widget.ACTION_REFRESH"
 
-        private const val ARTWORK_TARGET_PX = 128
+        private const val ARTWORK_TARGET_PX = 256
 
         fun updateAll(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
             val component = ComponentName(context, MsrWidgetProvider::class.java)
-            val ids = manager.getAppWidgetIds(component)
-            ids.forEach { id -> updateWidget(context, manager, id) }
+            manager.getAppWidgetIds(component).forEach { id ->
+                updateWidget(context, manager, id)
+            }
         }
 
         private fun updateWidget(
@@ -65,17 +70,12 @@ class MsrWidgetProvider : AppWidgetProvider() {
                     }
                 )
             )
-            views.setInt(
-                R.id.widget_accent,
-                "setBackgroundColor",
-                if (state.isPlaying) 0xFFFFFFFF.toInt() else 0xFF4A4A4A.toInt()
-            )
 
             val artwork = loadArtwork(state.artworkPath)
             if (artwork != null) {
                 views.setImageViewBitmap(R.id.widget_artwork, artwork)
             } else {
-                views.setImageViewResource(R.id.widget_artwork, R.mipmap.ic_launcher)
+                views.setImageViewResource(R.id.widget_artwork, R.drawable.ic_msr_cover_placeholder)
             }
 
             views.setImageViewResource(
@@ -89,24 +89,24 @@ class MsrWidgetProvider : AppWidgetProvider() {
                 )
             )
 
-            views.setOnClickPendingIntent(R.id.widget_root, openAppIntent(context))
+            views.setOnClickPendingIntent(R.id.widget_root, openAppPendingIntent(context))
             views.setOnClickPendingIntent(
                 R.id.widget_previous,
-                actionIntent(context, ACTION_PREVIOUS)
+                actionPendingIntent(context, ACTION_PREVIOUS)
             )
             views.setOnClickPendingIntent(
                 R.id.widget_toggle,
-                actionIntent(context, ACTION_TOGGLE)
+                actionPendingIntent(context, ACTION_TOGGLE)
             )
             views.setOnClickPendingIntent(
                 R.id.widget_next,
-                actionIntent(context, ACTION_NEXT)
+                actionPendingIntent(context, ACTION_NEXT)
             )
 
             manager.updateAppWidget(appWidgetId, views)
         }
 
-        private fun actionIntent(context: Context, action: String): PendingIntent {
+        private fun actionPendingIntent(context: Context, action: String): PendingIntent {
             val intent = Intent(context, MsrWidgetProvider::class.java).setAction(action)
             return PendingIntent.getBroadcast(
                 context,
@@ -116,17 +116,18 @@ class MsrWidgetProvider : AppWidgetProvider() {
             )
         }
 
-        private fun openAppIntent(context: Context): PendingIntent {
-            val intent = Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            }
-            return PendingIntent.getActivity(
+        private fun openAppPendingIntent(context: Context): PendingIntent =
+            PendingIntent.getActivity(
                 context,
                 0,
-                intent,
+                openAppIntent(context),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-        }
+
+        private fun openAppIntent(context: Context): Intent =
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
 
         private fun loadArtwork(path: String?): Bitmap? {
             if (path.isNullOrBlank()) return null
@@ -165,24 +166,32 @@ class MsrWidgetProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
         when (intent.action) {
             ACTION_TOGGLE, ACTION_NEXT, ACTION_PREVIOUS -> {
-                handleAction(context, intent.action.orEmpty())
-                updateAll(context)
+                val pendingResult = goAsync()
+                CoroutineScope(SupervisorJob() + Dispatchers.Main).launch {
+                    try {
+                        handleAction(context, intent.action.orEmpty())
+                        updateAll(context)
+                    } finally {
+                        pendingResult.finish()
+                    }
+                }
             }
             ACTION_REFRESH -> updateAll(context)
         }
     }
 
-    private fun handleAction(context: Context, action: String) {
+    private suspend fun handleAction(context: Context, action: String) {
         val controller = (context.applicationContext as? MonsterSirenApplication)
             ?.playerController
-        val hasSong = controller?.uiState?.value?.currentSong != null
+        if (controller == null) {
+            context.startActivity(openAppIntent(context))
+            return
+        }
 
-        if (controller == null || !hasSong) {
-            context.startActivity(
-                Intent(context, MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                }
-            )
+        controller.awaitQueueRestored()
+        val state = controller.uiState.value
+        if (state.queue.isEmpty() && state.currentSong == null) {
+            context.startActivity(openAppIntent(context))
             return
         }
 
