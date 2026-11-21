@@ -90,8 +90,7 @@
                 android:background="@drawable/widget_play_circle"
                 android:contentDescription="@string/widget_play"
                 android:padding="9dp"
-                android:src="@drawable/ic_widget_play"
-                android:tint="#0A0A0A" />
+                android:src="@drawable/ic_widget_play_dark" />
 
             <ImageButton
                 android:id="@+id/widget_next"

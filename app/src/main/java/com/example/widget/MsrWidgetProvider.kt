@@ -80,7 +80,8 @@ class MsrWidgetProvider : AppWidgetProvider() {
 
             views.setImageViewResource(
                 R.id.widget_toggle,
-                if (state.isPlaying) R.drawable.ic_widget_pause else R.drawable.ic_widget_play
+                if (state.isPlaying) R.drawable.ic_widget_pause_dark
+                else R.drawable.ic_widget_play_dark
             )
             views.setContentDescription(
                 R.id.widget_toggle,
