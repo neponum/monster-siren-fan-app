@@ -77,8 +77,10 @@ fun UpdateDialog(
                             color = MsrGrayMuted
                         )
                         Text(
-                            text = update.notes
-                                ?: stringResource(R.string.update_release_notes_empty),
+                            text = (update.notes
+                                ?: stringResource(R.string.update_release_notes_empty))
+                                .replace(Regex("(?m)^#{1,6}\\s*"), "")
+                                .replace(Regex("(?m)^[-*]\\s*"), "• "),
                             style = MaterialTheme.typography.bodySmall,
                             color = MsrGrayLight
                         )

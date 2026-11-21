@@ -170,7 +170,7 @@ class MsrWidgetProvider : AppWidgetProvider() {
                 val pendingResult = goAsync()
                 CoroutineScope(SupervisorJob() + Dispatchers.Main).launch {
                     try {
-                        handleAction(context, intent.action.orEmpty())
+                        runCatching { handleAction(context, intent.action.orEmpty()) }
                         updateAll(context)
                     } finally {
                         pendingResult.finish()
