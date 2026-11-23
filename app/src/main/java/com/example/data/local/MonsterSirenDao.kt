@@ -209,4 +209,55 @@ interface MonsterSirenDao {
         """
     )
     suspend fun resetStuckDownloads()
+
+    // ---- Personal playlists ----
+
+    @Query(
+        """
+        SELECT p.*,
+            (SELECT COUNT(*) FROM playlist_songs ps WHERE ps.playlistId = p.id) AS songCount
+        FROM playlists p
+        ORDER BY p.updatedAt DESC
+        """
+    )
+    fun observePlaylistsWithCount(): Flow<List<PlaylistWithCount>>
+
+    @Query(
+        """
+        SELECT s.*, a.name AS albumName, a.coverUrl AS albumCoverUrl, a.localCoverPath AS albumLocalCoverPath
+        FROM playlist_songs ps
+        JOIN songs s ON s.cid = ps.songCid
+        LEFT JOIN albums a ON s.albumCid = a.cid
+        WHERE ps.playlistId = :playlistId
+        ORDER BY ps.position ASC, ps.addedAt ASC
+        """
+    )
+    fun observePlaylistSongs(playlistId: Long): Flow<List<SongWithAlbum>>
+
+    @Query("SELECT * FROM playlists WHERE id = :playlistId LIMIT 1")
+    suspend fun getPlaylistById(playlistId: Long): PlaylistEntity?
+
+    @Insert
+    suspend fun insertPlaylist(playlist: PlaylistEntity): Long
+
+    @Query("UPDATE playlists SET name = :name, updatedAt = :updatedAt WHERE id = :playlistId")
+    suspend fun renamePlaylist(playlistId: Long, name: String, updatedAt: Long)
+
+    @Query("DELETE FROM playlists WHERE id = :playlistId")
+    suspend fun deletePlaylist(playlistId: Long)
+
+    @Query("UPDATE playlists SET updatedAt = :updatedAt WHERE id = :playlistId")
+    suspend fun touchPlaylist(playlistId: Long, updatedAt: Long)
+
+    @Query("SELECT COALESCE(MAX(position), -1) + 1 FROM playlist_songs WHERE playlistId = :playlistId")
+    suspend fun nextPlaylistPosition(playlistId: Long): Int
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertPlaylistSong(ref: PlaylistSongEntity): Long
+
+    @Query("DELETE FROM playlist_songs WHERE playlistId = :playlistId AND songCid = :songCid")
+    suspend fun removePlaylistSong(playlistId: Long, songCid: String)
+
+    @Query("SELECT EXISTS(SELECT 1 FROM playlist_songs WHERE playlistId = :playlistId AND songCid = :songCid)")
+    suspend fun isSongInPlaylist(playlistId: Long, songCid: String): Boolean
 }

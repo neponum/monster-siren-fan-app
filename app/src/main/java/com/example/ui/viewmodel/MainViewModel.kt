@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.BuildConfig
 import com.example.R
 import com.example.data.local.AlbumWithStats
+import com.example.data.local.PlaylistWithCount
 import com.example.data.local.SongWithAlbum
 import com.example.data.remote.NewsDetailDto
 import com.example.data.remote.NewsSummaryDto
@@ -92,6 +93,9 @@ class MainViewModel(
 
     val disclaimerAccepted: StateFlow<Boolean> = repository.preferences.disclaimerAccepted
         .stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    val playlists: StateFlow<List<PlaylistWithCount>> = repository.playlists
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val playbackState: StateFlow<PlaybackUiState> = playerController.uiState
 
@@ -364,6 +368,62 @@ class MainViewModel(
             repository.observeSongsByAlbum(albumCid)
         ) { album, songs ->
             AlbumDetailUiState(album = album, songs = songs)
+        }
+    }
+
+    fun observePlaylistSongs(playlistId: Long): Flow<List<SongWithAlbum>> =
+        repository.observePlaylistSongs(playlistId)
+
+    fun createPlaylist(name: String) {
+        viewModelScope.launch {
+            runCatching { repository.createPlaylist(name) }
+                .onSuccess { _snackbarMessage.value = "Плейлист «${name.trim()}» создан" }
+                .onFailure { _snackbarMessage.value = it.message ?: "Не удалось создать плейлист" }
+        }
+    }
+
+    fun createPlaylistWithSong(name: String, songCid: String) {
+        viewModelScope.launch {
+            runCatching {
+                val playlistId = repository.createPlaylist(name)
+                repository.addSongToPlaylist(playlistId, songCid)
+            }.onSuccess {
+                _snackbarMessage.value = "Плейлист «${name.trim()}» создан"
+            }.onFailure {
+                _snackbarMessage.value = it.message ?: "Не удалось создать плейлист"
+            }
+        }
+    }
+
+    fun renamePlaylist(playlistId: Long, name: String) {
+        viewModelScope.launch {
+            repository.renamePlaylist(playlistId, name)
+            _snackbarMessage.value = "Плейлист переименован"
+        }
+    }
+
+    fun deletePlaylist(playlistId: Long) {
+        viewModelScope.launch {
+            repository.deletePlaylist(playlistId)
+            _snackbarMessage.value = "Плейлист удалён"
+        }
+    }
+
+    fun addSongToPlaylist(playlistId: Long, songCid: String) {
+        viewModelScope.launch {
+            val added = repository.addSongToPlaylist(playlistId, songCid)
+            _snackbarMessage.value = if (added) {
+                "Трек добавлен в плейлист"
+            } else {
+                "Трек уже есть в этом плейлисте"
+            }
+        }
+    }
+
+    fun removeSongFromPlaylist(playlistId: Long, songCid: String) {
+        viewModelScope.launch {
+            repository.removeSongFromPlaylist(playlistId, songCid)
+            _snackbarMessage.value = "Трек убран из плейлиста"
         }
     }
 

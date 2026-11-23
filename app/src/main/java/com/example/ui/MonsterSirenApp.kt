@@ -79,6 +79,7 @@ fun MonsterSirenApp(
 
     val catalogState by viewModel.catalogState.collectAsStateWithLifecycle()
     val offlineVaultState by viewModel.offlineVaultState.collectAsStateWithLifecycle()
+    val playlists by viewModel.playlists.collectAsStateWithLifecycle()
     val newsState by viewModel.newsState.collectAsStateWithLifecycle()
     val playbackState by viewModel.playbackState.collectAsStateWithLifecycle()
     val snackbarMsg by viewModel.snackbarMessage.collectAsStateWithLifecycle()
@@ -275,6 +276,7 @@ fun MonsterSirenApp(
                                 catalogState = catalogState,
                                 offlineState = offlineVaultState,
                                 playbackState = playbackState,
+                                playlists = playlists,
                                 isMenuOpen = showNavDrawer,
                                 onSearchQueryChange = viewModel::updateSearchQuery,
                                 onOpenMenu = openNavDrawer,
@@ -285,7 +287,14 @@ fun MonsterSirenApp(
                                 onDownloadSong = viewModel::downloadSong,
                                 onCancelDownload = viewModel::cancelDownload,
                                 onDeleteSongDownload = viewModel::deleteSongDownload,
-                                onClearAllDownloads = viewModel::clearAllDownloads
+                                onClearAllDownloads = viewModel::clearAllDownloads,
+                                observePlaylistSongs = viewModel::observePlaylistSongs,
+                                onCreatePlaylist = viewModel::createPlaylist,
+                                onCreatePlaylistWithSong = viewModel::createPlaylistWithSong,
+                                onRenamePlaylist = viewModel::renamePlaylist,
+                                onDeletePlaylist = viewModel::deletePlaylist,
+                                onAddSongToPlaylist = viewModel::addSongToPlaylist,
+                                onRemoveSongFromPlaylist = viewModel::removeSongFromPlaylist
                             )
                         }
 

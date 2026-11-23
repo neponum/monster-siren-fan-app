@@ -113,7 +113,28 @@
     <string name="widget_next">Следующий трек</string>
     <string name="widget_previous">Предыдущий трек</string>
     <string name="widget_default_artist">塞壬唱片-MSR</string>
-    <string name="widget_status_playing">СЕЙЧАС ИГРАЕТ // MSR</string>
+    <string name="widget_status_playing">ИГРАЕТ // MSR</string>
     <string name="widget_status_paused">ПАУЗА // MSR</string>
-    <string name="widget_status_idle">ОТКРОЙТЕ ПРИЛОЖЕНИЕ</string>
+    <string name="widget_status_idle">НЕТ ТРЕКА</string>
+
+    <string name="playlist_my_title">МОИ ПЛЕЙЛИСТЫ</string>
+    <string name="playlist_create">СОЗДАТЬ ПЛЕЙЛИСТ</string>
+    <string name="playlist_create_short">СОЗДАТЬ</string>
+    <string name="playlist_empty_hint">Пока нет личных плейлистов. Создайте первый и добавляйте треки кнопкой + в списках.</string>
+    <string name="playlist_empty_songs_hint">В плейлисте пока нет треков. Нажмите «+» в разделе ALL, FAV или OFF, чтобы добавить песни.</string>
+    <string name="playlist_song_count">%1$d треков</string>
+    <string name="playlist_add_song">Добавить в плейлист</string>
+    <string name="playlist_remove_song">Убрать из плейлиста</string>
+    <string name="playlist_name_label">НАЗВАНИЕ</string>
+    <string name="playlist_name_hint">Например, «Дорога в Родос»</string>
+    <string name="playlist_new">НОВЫЙ ПЛЕЙЛИСТ</string>
+    <string name="playlist_rename">ПЕРЕИМЕНОВАТЬ ПЛЕЙЛИСТ</string>
+    <string name="playlist_delete">УДАЛИТЬ ПЛЕЙЛИСТ</string>
+    <string name="playlist_delete_message">Удалить плейлист «%1$s»? Треки останутся в каталоге.</string>
+    <string name="playlist_play_all">СЛУШАТЬ ПЛЕЙЛИСТ</string>
+    <string name="playlist_select_title">ДОБАВИТЬ В ПЛЕЙЛИСТ</string>
+    <string name="playlist_select_empty">Нет плейлистов. Создайте новый.</string>
+    <string name="action_create">СОЗДАТЬ</string>
+    <string name="action_save">СОХРАНИТЬ</string>
+    <string name="action_close">ЗАКРЫТЬ</string>
 </resources>

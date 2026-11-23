@@ -8,6 +8,9 @@ import com.example.data.local.AlbumEntity
 import com.example.data.local.AlbumWithStats
 import com.example.data.local.DownloadStatus
 import com.example.data.local.MonsterSirenDao
+import com.example.data.local.PlaylistEntity
+import com.example.data.local.PlaylistSongEntity
+import com.example.data.local.PlaylistWithCount
 import com.example.data.local.SongEntity
 import com.example.data.local.SongWithAlbum
 import com.example.data.local.UserPreferences
@@ -36,6 +39,11 @@ class MonsterSirenRepository(
     val favoriteSongs: Flow<List<SongWithAlbum>> = dao.observeFavoriteSongs()
     val totalOfflineBytes: Flow<Long> = dao.observeTotalOfflineBytes()
     val downloadedSongCount: Flow<Int> = dao.observeDownloadedSongCount()
+
+    val playlists: Flow<List<PlaylistWithCount>> = dao.observePlaylistsWithCount()
+
+    fun observePlaylistSongs(playlistId: Long): Flow<List<SongWithAlbum>> =
+        dao.observePlaylistSongs(playlistId)
 
     fun observeAlbum(albumCid: String): Flow<AlbumWithStats?> = dao.observeAlbumWithStats(albumCid)
 
@@ -259,6 +267,59 @@ class MonsterSirenRepository(
     suspend fun getSongWithAlbum(songCid: String): SongWithAlbum? = withContext(Dispatchers.IO) {
         dao.getSongWithAlbum(songCid)
     }
+
+    suspend fun createPlaylist(name: String): Long = withContext(Dispatchers.IO) {
+        val trimmed = name.trim()
+        if (trimmed.isEmpty()) {
+            throw IllegalArgumentException("Введите название плейлиста")
+        }
+        val now = System.currentTimeMillis()
+        dao.insertPlaylist(
+            PlaylistEntity(
+                name = trimmed,
+                createdAt = now,
+                updatedAt = now
+            )
+        )
+    }
+
+    suspend fun renamePlaylist(playlistId: Long, name: String) = withContext(Dispatchers.IO) {
+        val trimmed = name.trim()
+        if (trimmed.isNotEmpty()) {
+            dao.renamePlaylist(playlistId, trimmed, System.currentTimeMillis())
+        }
+    }
+
+    suspend fun deletePlaylist(playlistId: Long) = withContext(Dispatchers.IO) {
+        dao.deletePlaylist(playlistId)
+    }
+
+    suspend fun addSongToPlaylist(playlistId: Long, songCid: String): Boolean =
+        withContext(Dispatchers.IO) {
+            if (dao.getPlaylistById(playlistId) == null) return@withContext false
+            if (dao.isSongInPlaylist(playlistId, songCid)) return@withContext false
+            val position = dao.nextPlaylistPosition(playlistId)
+            val inserted = dao.insertPlaylistSong(
+                PlaylistSongEntity(
+                    playlistId = playlistId,
+                    songCid = songCid,
+                    position = position,
+                    addedAt = System.currentTimeMillis()
+                )
+            )
+            if (inserted != -1L) {
+                dao.touchPlaylist(playlistId, System.currentTimeMillis())
+                true
+            } else {
+                false
+            }
+        }
+
+    suspend fun removeSongFromPlaylist(playlistId: Long, songCid: String) =
+        withContext(Dispatchers.IO) {
+            dao.removePlaylistSong(playlistId, songCid)
+            dao.touchPlaylist(playlistId, System.currentTimeMillis())
+        }
 
     suspend fun fetchNews(): Result<List<NewsSummaryDto>> = withContext(Dispatchers.IO) {
         if (!isNetworkAvailable()) {

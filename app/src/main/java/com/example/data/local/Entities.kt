@@ -2,6 +2,7 @@ package com.example.data.local
 
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
@@ -68,3 +69,36 @@ data class SongWithAlbum(
     val isDownloaded: Boolean
         get() = song.downloadStatus == DownloadStatus.DOWNLOADED && !song.localAudioPath.isNullOrBlank()
 }
+
+@Entity(tableName = "playlists")
+data class PlaylistEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    val name: String,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis()
+)
+
+@Entity(
+    tableName = "playlist_songs",
+    primaryKeys = ["playlistId", "songCid"],
+    foreignKeys = [
+        ForeignKey(
+            entity = PlaylistEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["playlistId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("playlistId"), Index("songCid")]
+)
+data class PlaylistSongEntity(
+    val playlistId: Long,
+    val songCid: String,
+    val position: Int,
+    val addedAt: Long = System.currentTimeMillis()
+)
+
+data class PlaylistWithCount(
+    @Embedded val playlist: PlaylistEntity,
+    val songCount: Int
+)
